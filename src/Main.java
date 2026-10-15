@@ -35,21 +35,34 @@ public class Main {
         }
     }
 
+    public static String readLine(String prompt) {
+        String input = "";
+        boolean isValid = false;
+
+        while (!isValid) {
+            System.out.print(prompt);
+            input = sc.nextLine();
+
+            if (input.matches("\\s*")) {
+                System.out.println("Error: Input cannot be empty or just spaces.");
+            } else if (input.matches("\\s.*|.*\\s")) {
+                System.out.println("Error: Input cannot start or end with spaces.");
+            } else {
+                isValid = true;
+            }
+        }
+        return input;
+    }
+
     public static int getValidInt(String prompt, int max) {
         int number = -1;
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            String input = sc.nextLine();
-
-            if (input.trim().isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            String input = readLine(prompt);
 
             try {
-                number = Integer.parseInt(input.trim());
+                number = Integer.parseInt(input);
                 if (number < 1 || number > max) {
                     System.out.println("Error: Invalid option. Please choose 1-" + max + ".");
                 } else {
@@ -67,16 +80,10 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            String input = sc.nextLine();
-
-            if (input.trim().isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            String input = readLine(prompt);
 
             try {
-                number = Integer.parseInt(input.trim());
+                number = Integer.parseInt(input);
                 if (number < min || number > max) {
                     System.out.println(rangeMessage);
                 } else {
@@ -89,35 +96,12 @@ public class Main {
         return number;
     }
 
-    public static String getNonBlank(String prompt) {
-        String input = "";
-        boolean isValid = false;
-
-        while (!isValid) {
-            System.out.print(prompt);
-            input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-            } else {
-                isValid = true;
-            }
-        }
-        return input;
-    }
-
     public static String getValidTracking(String prompt) {
         String input = "";
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            input = readLine(prompt);
 
             if (input.matches("[Aa][Bb][Cc][0-9]{4}")) {
                 input = input.toUpperCase();
@@ -134,13 +118,7 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            input = readLine(prompt);
 
             if (input.length() >= 2 && input.length() <= 50 && input.matches("[A-Za-z][A-Za-z .'-]*")) {
                 isValid = true;
@@ -156,13 +134,7 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            String input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            String input = readLine(prompt);
 
             if (!input.matches("[0-9]+(\\.[0-9]{1,2})?")) {
                 System.out.println("Error: Please enter a valid decimal number (e.g. 1.5, up to 2 decimal places).");
@@ -190,13 +162,7 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            input = readLine(prompt);
 
             if (input.length() >= 3 && input.length() <= 50 && input.matches("^(?=.*[a-zA-Z])[a-zA-Z0-9 .,!'-]+$")) {
                 isValid = true;
@@ -212,13 +178,7 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print(prompt);
-            String input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            String input = readLine(prompt);
 
             if (input.equalsIgnoreCase("Document")) {
                 type = 1;
@@ -301,13 +261,7 @@ public class Main {
         boolean isValid = false;
 
         while (!isValid) {
-            System.out.print("Select delivery service: ");
-            String input = sc.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("Error: Input cannot be empty or just spaces.");
-                continue;
-            }
+            String input = readLine("Select delivery service: ");
 
             if (input.equalsIgnoreCase("Standard")) {
                 service = new StandardDelivery();
@@ -331,7 +285,7 @@ public class Main {
             System.out.println("No parcels have been added yet.");
             return;
         }
-        String trackingNumber = getNonBlank("Tracking Number: ");
+        String trackingNumber = readLine("Tracking Number: ");
 
         try {
             Parcel parcel = manager.findParcel(trackingNumber);
@@ -358,8 +312,8 @@ public class Main {
             System.out.println("No parcels have been added yet.");
             return;
         }
-        String trackingNumber = getNonBlank("Tracking Number: ");
-
+        String trackingNumber = readLine("Tracking Number: ");
+           
         try {
             Parcel parcel = manager.findParcel(trackingNumber);
             parcel.markDelivered();
