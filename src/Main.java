@@ -23,6 +23,9 @@ public class Main {
                 case 3:
                     changeDeliveryService();
                     break;
+                case 4:
+                    markAsDelivered();
+                    break;
                 case 5:
                     endProgram = true;
                     break;
@@ -300,6 +303,21 @@ public class Main {
         } catch (ParcelAlreadyDeliveredException e) {
             System.out.println(e.getMessage());
         } catch (SameDayNotAllowedException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void markAsDelivered() {
+        System.out.println("\n=== MARK AS DELIVERED ===");
+        String trackingNumber = getNonBlank("Tracking Number: ");
+
+        try {
+            Parcel parcel = manager.findParcel(trackingNumber);
+            parcel.markDelivered();
+            System.out.println("Parcel delivered successfully!");
+        } catch (ParcelNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (ParcelAlreadyDeliveredException e) {
             System.out.println(e.getMessage());
         }
     }
