@@ -8,4 +8,4 @@ A Java console program that lets you add parcels (Document, Box, Fragile), pick 
 ## How to Run
 
 1. Open the `src` folder in VS Code.
-2. Open Main.java and run the file.
+2. Open `Main.java` and run the file.
