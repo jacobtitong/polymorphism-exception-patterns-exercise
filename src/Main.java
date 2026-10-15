@@ -16,6 +16,10 @@ public class Main {
                 case 1:
                     addParcel();
                     break;
+                case 2:
+                    System.out.println("\n=== ALL PARCELS ===");
+                    manager.displayAllParcels();
+                    break;
                 case 5:
                     endProgram = true;
                     break;
