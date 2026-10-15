@@ -36,4 +36,23 @@ public class ParcelManager {
         }
         throw new ParcelNotFoundException("Parcel not found!");
     }
+
+    public void displayAllParcels() {
+        if (parcels.length == 0) {
+            System.out.println("No parcels have been added yet.");
+            return;
+        }
+
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s | %-8s | %-20s | %-11s | %-9s | %-13s | %-9s%n",
+                "Tracking No", "Type", "Receiver", "Chg. Weight", "Service", "Delivery Fee", "Status");
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        for (Parcel p : parcels) {
+            System.out.printf("%-12.12s | %-8.8s | %-20.20s | %-11.11s | %-9.9s | %-13.13s | %-9.9s%n",
+                    p.getTrackingNumber(), p.getClass().getSimpleName(), p.getReceiverName(),
+                    String.format("%.2f kg", p.getChargeableWeight()), p.getServiceName(),
+                    String.format("Php %.2f", p.getDeliveryFee()), p.getStatusText());
+        }
+        System.out.println("----------------------------------------------------------------------------------------------------");
+    }
 }
