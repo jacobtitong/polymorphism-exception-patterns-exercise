@@ -20,6 +20,9 @@ public class Main {
                     System.out.println("\n=== ALL PARCELS ===");
                     manager.displayAllParcels();
                     break;
+                case 3:
+                    changeDeliveryService();
+                    break;
                 case 5:
                     endProgram = true;
                     break;
@@ -276,5 +279,28 @@ public class Main {
                 break;
         }
         return service;
+    }
+
+    public static void changeDeliveryService() {
+        System.out.println("\n=== CHANGE DELIVERY SERVICE ===");
+        String trackingNumber = getNonBlank("Tracking Number: ");
+
+        try {
+            Parcel parcel = manager.findParcel(trackingNumber);
+
+            if (parcel.isDelivered()) {
+                throw new ParcelAlreadyDeliveredException("Parcel already delivered!");
+            }
+
+            DeliveryStrategy service = selectService();
+            parcel.setService(service);
+            System.out.println("Delivery service changed! New fee: " + String.format("Php %.2f", parcel.getDeliveryFee()));
+        } catch (ParcelNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (ParcelAlreadyDeliveredException e) {
+            System.out.println(e.getMessage());
+        } catch (SameDayNotAllowedException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
