@@ -13,6 +13,9 @@ public class Main {
             int option = getValidInt("--> Option: ", 5);
 
             switch (option) {
+                case 1:
+                    addParcel();
+                    break;
                 case 5:
                     endProgram = true;
                     break;
@@ -191,5 +194,83 @@ public class Main {
             }
         }
         return input;
+    }
+
+    public static void addParcel() {
+        System.out.println("\n=== ADD PARCEL ===");
+        System.out.print("1 - Document\n2 - Box\n3 - Fragile\n");
+        int type = getValidInt("Select parcel type (1-3): ", 3);
+
+        double maxWeight = 0.5;
+        String maxText = "0.5";
+        String typeName = "Document";
+        if (type == 2) {
+            maxWeight = 50;
+            maxText = "50";
+            typeName = "Box";
+        } else if (type == 3) {
+            maxWeight = 30;
+            maxText = "30";
+            typeName = "Fragile";
+        }
+
+        try {
+            String trackingNumber = getValidTracking("Tracking Number: ");
+            manager.checkTrackingNumber(trackingNumber);
+
+            String receiver = getValidName("Receiver Name: ");
+            double weight = getValidWeight("Weight (kg): ", maxWeight, maxText, typeName);
+
+            Parcel parcel;
+            if (type == 1) {
+                int pages = getValidWholeNumber("Number of pages: ", 1, 100, "Error: Number of pages must be between 1 and 100.");
+                parcel = new Document(trackingNumber, receiver, weight, pages);
+            } else {
+                int length = getValidWholeNumber("Length (cm): ", 1, 200, "Error: Dimension must be a whole number between 1 and 200 cm.");
+                int width = getValidWholeNumber("Width (cm): ", 1, 200, "Error: Dimension must be a whole number between 1 and 200 cm.");
+                int height = getValidWholeNumber("Height (cm): ", 1, 200, "Error: Dimension must be a whole number between 1 and 200 cm.");
+                if (type == 2) {
+                    parcel = new Box(trackingNumber, receiver, weight, length, width, height);
+                } else {
+                    String note = getValidNote("Handling Note: ");
+                    parcel = new Fragile(trackingNumber, receiver, weight, length, width, height, note);
+                }
+            }
+
+            boolean accepted = false;
+            while (!accepted) {
+                DeliveryStrategy service = selectService();
+                try {
+                    parcel.setService(service);
+                    accepted = true;
+                } catch (SameDayNotAllowedException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            manager.addParcel(parcel);
+            System.out.println("Parcel added successfully! Delivery fee: " + String.format("Php %.2f", parcel.getDeliveryFee()));
+        } catch (DuplicateTrackingNumberException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static DeliveryStrategy selectService() {
+        System.out.print("1 - Standard\n2 - Express\n3 - Same Day\n");
+        int choice = getValidInt("Select delivery service (1-3): ", 3);
+
+        DeliveryStrategy service = null;
+        switch (choice) {
+            case 1:
+                service = new StandardDelivery();
+                break;
+            case 2:
+                service = new ExpressDelivery();
+                break;
+            case 3:
+                service = new SameDayDelivery();
+                break;
+        }
+        return service;
     }
 }
