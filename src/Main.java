@@ -119,7 +119,8 @@ public class Main {
                 continue;
             }
 
-            if (input.matches("ABC[0-9]{4}")) {
+            if (input.matches("[Aa][Bb][Cc][0-9]{4}")) {
+                input = input.toUpperCase();
                 isValid = true;
             } else {
                 System.out.println("Error: Tracking Number must be \"ABC\" followed by 4 digits (e.g. ABC0001).");
@@ -206,10 +207,39 @@ public class Main {
         return input;
     }
 
+    public static int getValidParcelType(String prompt) {
+        int type = 0;
+        boolean isValid = false;
+
+        while (!isValid) {
+            System.out.print(prompt);
+            String input = sc.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Input cannot be empty or just spaces.");
+                continue;
+            }
+
+            if (input.equalsIgnoreCase("Document")) {
+                type = 1;
+                isValid = true;
+            } else if (input.equalsIgnoreCase("Box")) {
+                type = 2;
+                isValid = true;
+            } else if (input.equalsIgnoreCase("Fragile")) {
+                type = 3;
+                isValid = true;
+            } else {
+                System.out.println("Error: Invalid parcel type. Please type Document, Box, or Fragile.");
+            }
+        }
+        return type;
+    }
+
     public static void addParcel() {
         System.out.println("\n=== ADD PARCEL ===");
-        System.out.print("1 - Document\n2 - Box\n3 - Fragile\n");
-        int type = getValidInt("Select parcel type (1-3): ", 3);
+        System.out.print("Parcel types: Document, Box, Fragile\n");
+        int type = getValidParcelType("Select parcel type: ");
 
         double maxWeight = 0.5;
         String maxText = "0.5";
@@ -266,26 +296,41 @@ public class Main {
     }
 
     public static DeliveryStrategy selectService() {
-        System.out.print("1 - Standard\n2 - Express\n3 - Same Day\n");
-        int choice = getValidInt("Select delivery service (1-3): ", 3);
-
+        System.out.print("Delivery services: Standard, Express, Same Day\n");
         DeliveryStrategy service = null;
-        switch (choice) {
-            case 1:
+        boolean isValid = false;
+
+        while (!isValid) {
+            System.out.print("Select delivery service: ");
+            String input = sc.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Error: Input cannot be empty or just spaces.");
+                continue;
+            }
+
+            if (input.equalsIgnoreCase("Standard")) {
                 service = new StandardDelivery();
-                break;
-            case 2:
+                isValid = true;
+            } else if (input.equalsIgnoreCase("Express")) {
                 service = new ExpressDelivery();
-                break;
-            case 3:
+                isValid = true;
+            } else if (input.equalsIgnoreCase("Same Day")) {
                 service = new SameDayDelivery();
-                break;
+                isValid = true;
+            } else {
+                System.out.println("Error: Invalid delivery service. Please type Standard, Express, or Same Day.");
+            }
         }
         return service;
     }
 
     public static void changeDeliveryService() {
         System.out.println("\n=== CHANGE DELIVERY SERVICE ===");
+        if (manager.isEmpty()) {
+            System.out.println("No parcels have been added yet.");
+            return;
+        }
         String trackingNumber = getNonBlank("Tracking Number: ");
 
         try {
@@ -309,6 +354,10 @@ public class Main {
 
     public static void markAsDelivered() {
         System.out.println("\n=== MARK AS DELIVERED ===");
+        if (manager.isEmpty()) {
+            System.out.println("No parcels have been added yet.");
+            return;
+        }
         String trackingNumber = getNonBlank("Tracking Number: ");
 
         try {

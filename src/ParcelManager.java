@@ -15,6 +15,10 @@ public class ParcelManager {
         return instance;
     }
 
+    public boolean isEmpty() {
+        return parcels.length == 0;
+    }
+
     public void checkTrackingNumber(String tn) throws DuplicateTrackingNumberException {
         for (Parcel p : parcels) {
             if (p.getTrackingNumber().equalsIgnoreCase(tn)) {
